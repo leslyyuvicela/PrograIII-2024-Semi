@@ -28,8 +28,6 @@ class crud:
             cursor = self.conexion.cursor()
             cursor.execute(sql, valores)
             self.conexion.commit()
-            #mostrar el resultado de consulta
-            
             return "ok"
         except Error as e:
             return str(e)
