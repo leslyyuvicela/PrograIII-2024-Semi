@@ -54,27 +54,22 @@
     </div>
 </form>
 <script>
-    /*
-    Tarea: Realizar la busqueda interactiva de alumnos, por codigo, nombre y email.
-    */
-    document.addEventListener('DOMContentLoaded', event=> {
-        document.querySelector('#frmAlumno').addEventListener('submit', (e)=>{
-            e.preventDefault();
-            
-            let datos = {
-                accion : frmAlumno.dataset.accion,
-                idAlumno : frmAlumno.dataset.idalumno,
-                codigo : txtCodigoAlumno.value,
-                nombre : txtNombreAlumno.value,
-                direccion : txtDireccionAlumno.value,
-                telefono : txtTelefonoAlumno.value,
-                correo : txtCorreoAlumno.value
-            };
-            enviarDatosAlumno(datos);
-        });
+    document.querySelector('#frmAlumno').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        
+        let datos = {
+            accion : frmAlumno.dataset.accion,
+            idAlumno : frmAlumno.dataset.idalumno,
+            codigo : txtCodigoAlumno.value,
+            nombre : txtNombreAlumno.value,
+            direccion : txtDireccionAlumno.value,
+            telefono : txtTelefonoAlumno.value,
+            correo : txtCorreoAlumno.value
+        };
+        enviarDatosAlumno(datos);
     });
     function enviarDatosAlumno(datos){
-        fetch('/',{
+        fetch('/alumnos',{
                 method : 'POST',
                 body : JSON.stringify(datos)
             })
