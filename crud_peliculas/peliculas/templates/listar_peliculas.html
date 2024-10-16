@@ -1,0 +1,19 @@
+<div>
+    <h1>Peliculas</h1>
+    <table>
+        <tr>
+            <th>Titulo</th>
+            <th>Director</th>
+            <th>Duracion</th>
+            <th>Estreno</th>
+        </tr>
+        {% for pelicula in peliculas %}
+        <tr>
+            <td>{{ pelicula.titulo }}</td>
+            <td>{{ pelicula.director }}</td>
+            <td>{{ pelicula.duracion }}</td>
+            <td>{{ pelicula.estreno }}</td>
+            <td><a href="{% url 'eliminar_pelicula' pelicula.id %}">Eliminar</a></td>
+        </tr>
+        {% endfor %}
+</div>
