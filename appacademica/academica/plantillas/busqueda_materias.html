@@ -9,6 +9,10 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="mb-3">
+                <input type="text" id="inputBusquedaMateria" class="form-control" placeholder="Buscar">
+                <button type="button" class="btn btn-primary mt-2" onclick="buscarMateria()">Buscar</button>
+            </div>
             <table class="table table-hover" id="tblMaterias">
                 <thead>
                     <tr>
@@ -23,6 +27,7 @@
         </div>
     </div>
 </form>
+
 <script>
     /*
     Tarea: Realizar la busqueda interactiva de materias, alumnos y docentes, por codigo, nombre y email.
@@ -45,23 +50,41 @@
         })
         .catch(err => console.log(err));
     }
-    function mostrarFilasMaterias(data = []){
-        let filas = '';
-        data.forEach(materia => {
-            filas += `
-                <tr onClick='modificarMateria(${JSON.stringify(materia)})'>
-                    <td>${materia.codigo}</td>
-                    <td>${materia.nombre}</td>
-                    <td>${materia.uv}</td>
-                    <td>
-                        <button type="button" class="btn btn-outline-danger" 
-                            onClick='eliminarMateria(${materia.id})'>DEL
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
-        document.querySelector('#tblMaterias > tbody').innerHTML = filas;
+    function mostrarFilasMaterias(data = []) {
+    let filas = '';
+    data.forEach(materia => {
+        filas += `
+            <tr>
+                <td>${materia.codigo}</td>
+                <td>${materia.nombre}</td>
+                <td>${materia.uv}</td>
+                <td>
+                    <button type="button" class="btn btn-outline-danger" 
+                        onClick='eliminarMateria(${materia.id})'>DEL
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    document.querySelector('#tblMaterias > tbody').innerHTML = filas;
+}
+function buscarMateria() {
+    const filtro = document.getElementById('inputBusquedaMateria').value;
+
+    // Si el campo de búsqueda está vacío, cargar todas las materias
+    if (filtro.trim() === '') {
+        consultarMaterias();  // Llama a la función sin filtro para cargar todos los registros
+    } else {
+        // Llama al endpoint con el filtro de búsqueda
+        fetch(`consultar_materias/?q=${filtro}`)
+        .then(res => res.json())
+        .then(data => {
+            mostrarFilasMaterias(data);  // Muestra los resultados filtrados
+        })
+        .catch(err => console.log(err));
     }
+}
+
+    // Carga inicial de todos los alumnos
     consultarMaterias();
-</script>
+</script> 

@@ -9,6 +9,12 @@
             </div>
         </div>
         <div class="card-body">
+            <!-- Barra de búsqueda -->
+            <div class="mb-3">
+                <input type="text" id="inputBusquedaAlumno" class="form-control" placeholder="Buscar">
+                <button type="button" class="btn btn-primary mt-2" onclick="buscarAlumno()">Buscar</button>
+            </div>
+
             <table class="table table-hover" id="tblAlumnos">
                 <thead>
                     <tr>
@@ -24,10 +30,8 @@
         </div>
     </div>
 </form>
+
 <script>
-    /*
-    Tarea: Realizar la busqueda interactiva de alumnos, por codigo, nombre y email.
-    */
     function eliminarAlumno(idAlumno){
         if(confirm("¿Desea eliminar este registro?")){
             let datos = {
@@ -37,15 +41,17 @@
             enviarDatosAlumno(datos);
         }
     }
-    function consultarAlumnos(){
-        fetch('consultar_alumnos/')
+
+    function consultarAlumnos(filtro = '') {
+        fetch('consultar_alumnos/?q=' + filtro)
         .then(res => res.json())
         .then(data => {
             mostrarFilasAlumnos(data);
         })
         .catch(err => console.log(err));
     }
-    function mostrarFilasAlumnos(data = []){
+
+    function mostrarFilasAlumnos(data = []) {
         let filas = '';
         data.forEach(alumno => {
             filas += `
@@ -64,5 +70,19 @@
         });
         document.querySelector('#tblAlumnos > tbody').innerHTML = filas;
     }
+
+    // Función de búsqueda
+    function buscarAlumno() {
+    const filtro = document.getElementById('inputBusquedaAlumno').value;
+
+    // Si el campo de búsqueda está vacío, mostrar todos los alumnos
+    if (filtro.trim() === '') {
+        consultarAlumnos();  // Llamar a la función sin filtro para cargar todos los registros
+    } else {
+        consultarAlumnos(filtro);  // Buscar solo los registros que coinciden con el filtro
+    }
+}
+
+    // Carga inicial de todos los alumnos
     consultarAlumnos();
 </script>

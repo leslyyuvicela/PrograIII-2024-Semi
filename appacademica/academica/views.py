@@ -4,6 +4,7 @@ import json
 from .models import alumno, docente, materia
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 # Create your views here.
 def hola_mundo(request):
@@ -22,17 +23,51 @@ def vista(request, form):
     return render(request, f"{form}.html")
 
 def consultar_alumnos(request):
-    datos = alumno.objects.values('id', 'codigo', 'nombre', 'direccion', 'telefono')
-    return JsonResponse(list(datos), safe=False)
+    filtro = request.GET.get('q', '')  # Recibe el parámetro de búsqueda
+    if filtro:
+        # Filtros que buscan por código, nombre o email
+        alumnos = alumno.objects.filter(
+            Q(codigo__icontains=filtro) | 
+            Q(nombre__icontains=filtro) 
+        )
+    else:
+        alumnos = alumno.objects.all()  # Si no hay filtro, devuelve todos los alumnos
+    
+    # Devolver los resultados como JSON
+    datos = list(alumnos.values('id', 'codigo', 'nombre', 'direccion', 'telefono'))
+    return JsonResponse(datos, safe=False)
 
 def consultar_docentes(request):
-    datos = docente.objects.values('id', 'codigo', 'nombre', 'direccion', 'telefono', 'email')
-    return JsonResponse(list(datos), safe=False)
+    filtro = request.GET.get('q', '')  # Recibe el parámetro de búsqueda
+    if filtro:
+        # Filtros que buscan por código, nombre o email
+        docentes = docente.objects.filter(
+            Q(codigo__icontains=filtro) | 
+            Q(nombre__icontains=filtro) |
+            Q(email__icontains=filtro)
+        )
+    else:
+        docentes = docente.objects.all()  # Si no hay filtro, devuelve todos los docentes
+    
+    # Devolver los resultados como JSON
+    datos = list(docentes.values('id', 'codigo', 'nombre', 'direccion', 'telefono', 'email'))
+    return JsonResponse(datos, safe=False)
 
 def consultar_materias(request):
-    datos = materia.objects.values('id', 'codigo', 'nombre', 'uv')
-    return JsonResponse(list(datos), safe=False)
+    filtro = request.GET.get('q', '')
+    print(f"Búsqueda de materias con filtro: {filtro}")  # Imprime el filtro recibido
+    
+    if filtro:
+        materias = materia.objects.filter(
+            Q(codigo__icontains=filtro) | 
+            Q(nombre__icontains=filtro)
+        )
+    else:
+        materias = materia.objects.all()
 
+    datos = list(materias.values('id', 'codigo', 'nombre', 'uv'))
+    print(f"Datos enviados: {datos}")  # Imprime los datos enviados en la respuesta
+    return JsonResponse(datos, safe=False)
 @csrf_exempt
 def guardar_alumno(request):
     if request.method == 'POST':

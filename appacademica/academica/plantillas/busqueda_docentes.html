@@ -9,6 +9,10 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="mb-3">
+                <input type="text" id="inputBusquedaDocente" class="form-control" placeholder="Buscar">
+                <button type="button" class="btn btn-primary mt-2" onclick="buscarDocente()">Buscar</button>
+            </div>
             <table class="table table-hover" id="tblDocentes">
                 <thead>
                     <tr>
@@ -66,5 +70,23 @@
         });
         document.querySelector('#tblDocentes > tbody').innerHTML = filas;
     }
+    function buscarDocente() {
+    const filtro = document.getElementById('inputBusquedaDocente').value;
+
+    // Si el campo de búsqueda está vacío, mostrar todos los docentes
+    if (filtro.trim() === '') {
+        consultarDocentes();  // Llamar a la función sin filtro para cargar todos los registros
+    } else {
+        // Enviar la solicitud con el filtro
+        fetch(`consultar_docentes/?q=${filtro}`)
+        .then(res => res.json())
+        .then(data => {
+            mostrarFilasDocentes(data);  // Mostrar los resultados
+        })
+        .catch(err => console.log(err));
+    }
+}
+
+    // Carga inicial de todos los alumnos
     consultarDocentes();
 </script>
