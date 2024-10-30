@@ -31,14 +31,16 @@
 
 <script>
     function eliminarAlumno(idAlumno) {
-        if (confirm("¿Desea eliminar este registro?")) {
+        alertify.confirm('Eliminar Alumno', '¿Está seguro de eliminar este alumno?', function(){
             let datos = {
-                accion: "eliminar",
+                accion : "eliminar",
                 idAlumno,
             };
             enviarDatosAlumno(datos);
-            alertify.success('Registro eliminado exitosamente');
-        }
+            alertify.success('Alumno eliminado');
+            }, function(){
+            alertify.error('Cancelado');
+        });
     }
 
     function consultarAlumnos(filtro = '') {

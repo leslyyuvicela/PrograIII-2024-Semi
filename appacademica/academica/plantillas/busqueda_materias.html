@@ -29,13 +29,17 @@
 
 <script>
     function eliminarMateria(idMateria) {
-        if (confirm("¿Desea eliminar este registro?")) {
+        alertify.confirm('Eliminar Materia', '¿Está seguro de eliminar esta materia?', function(){
             let datos = {
-                accion: "eliminar",
+                accion : "eliminar",
                 idMateria,
             };
             enviarDatosMateria(datos);
+            alertify.success('Materia eliminada');
+            }, function(){
+            alertify.error('Cancelado');
         }
+        );
     }
 
     function consultarMaterias() {

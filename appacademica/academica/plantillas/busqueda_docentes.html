@@ -34,13 +34,17 @@
     Tarea: Realizar la busqueda interactiva de docentes, por codigo, nombre y email.
     */
     function eliminarDocente(idDocente){
-        if(confirm("¿Desea eliminar este registro?")){
+        alertify.confirm('Eliminar Docente', '¿Está seguro de eliminar este docente?', function(){
             let datos = {
                 accion : "eliminar",
                 idDocente,
             };
             enviarDatosDocente(datos);
-        }
+            alertify.success('Docente eliminado');
+            }, function(){
+            alertify.error('Cancelado');
+            }
+        );
     }
     
     function consultarDocentes(filtro = '') {

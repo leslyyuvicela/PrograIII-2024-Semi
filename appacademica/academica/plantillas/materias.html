@@ -57,6 +57,7 @@
                 uv: txtUvMateria.value,
             };
             enviarDatosMateria(datos);
+            alertify.success('Materia guardada correctamente');
         }
     });
 
@@ -85,7 +86,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.existe) {
-                    alert('El código ya existe, por favor introduce uno nuevo.');
+                    alertify.error("El código de materia ya existe. Por favor, ingrese uno nuevo.")
                     return false; // El código ya existe
                 }
                 return true; // El código es único
@@ -96,7 +97,7 @@
                 return false; // En caso de error, no permitas guardar
             });
     }
-
+    alertify.set('notifier', 'position', 'top-right');
     function enviarDatosMateria(datos) {
         fetch('guardar_materia/', {
             method: 'POST',

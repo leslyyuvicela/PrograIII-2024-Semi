@@ -70,6 +70,7 @@
                     email: txtEmailDocente.value
                 };
                 enviarDatosDocente(datos);
+                alertify.success('Docente guardado correctamente');
             }
         });
     });
@@ -124,7 +125,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.existe) {
-                    alert('El código ya existe, por favor introduce uno nuevo.');
+                    alertify.error("El código de docente ya existe. Por favor, ingrese uno nuevo.")
                     return false;
                 }
                 return true;
@@ -134,7 +135,7 @@
                 return false;
             });
     }
-
+    alertify.set('notifier', 'position', 'top-right');
     function enviarDatosDocente(datos) {
         fetch('guardar_docente/', {
             method: 'POST',

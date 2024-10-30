@@ -31,13 +31,18 @@
 
 <script>
     function eliminarUsuario(idUsuario) {
-        if (confirm("¿Desea eliminar este registro?")) {
+        alertify.confirm('Eliminar Usuario', '¿Está seguro de eliminar este Usuario?', function(){
             let datos = {
-                accion: "eliminar",
-                idUsuario,
+                accion : "eliminar",
+                idMateria,
             };
-            enviarDatosUsuario(datos);
+            enviarDatosMateria(datos);
+            alertify.success('Usuario eliminado');
+            }, function(){
+            alertify.error('Cancelado');
+            
         }
+        );
     }
 
     function consultarUsuarios(filtro = '') {
