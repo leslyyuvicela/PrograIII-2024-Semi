@@ -18,3 +18,10 @@ class materia(models.Model):
     codigo = models.CharField(max_length=10)
     nombre = models.CharField(max_length=75)
     uv = models.CharField(max_length=2)
+
+class usuario(models.Model):
+    usuario = models.CharField(max_length=35)
+    clave = models.CharField(max_length=35)
+    nombre = models.CharField(max_length=85)
+    direccion = models.CharField(max_length=100)
+    telefono = models.CharField(max_length=9)

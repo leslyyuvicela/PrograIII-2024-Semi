@@ -9,9 +9,8 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="mb-3">
-                <input type="text" id="inputBusquedaMateria" class="form-control" placeholder="Buscar">
-                <button type="button" class="btn btn-primary mt-2" onclick="buscarMateria()">Buscar</button>
+            <div class="input-group mb-3">
+                <input type="text" id="inputBusquedaMateria" class="form-control" placeholder="Buscar"> 
             </div>
             <table class="table table-hover" id="tblMaterias">
                 <thead>
@@ -29,62 +28,62 @@
 </form>
 
 <script>
-    /*
-    Tarea: Realizar la busqueda interactiva de materias, alumnos y docentes, por codigo, nombre y email.
-    Fecha: 23/10/2024
-    */
-    function eliminarMateria(idMateria){
-        if(confirm("¿Desea eliminar este registro?")){
+    function eliminarMateria(idMateria) {
+        if (confirm("¿Desea eliminar este registro?")) {
             let datos = {
-                accion : "eliminar",
+                accion: "eliminar",
                 idMateria,
             };
             enviarDatosMateria(datos);
         }
     }
-    function consultarMaterias(){
+
+    function consultarMaterias() {
         fetch('consultar_materias/')
-        .then(res => res.json())
-        .then(data => {
-            mostrarFilasMaterias(data);
-        })
-        .catch(err => console.log(err));
+            .then(res => res.json())
+            .then(data => {
+                mostrarFilasMaterias(data);
+            })
+            .catch(err => console.log(err));
     }
+
     function mostrarFilasMaterias(data = []) {
-    let filas = '';
-    data.forEach(materia => {
-        filas += `
-            <tr>
-                <td>${materia.codigo}</td>
-                <td>${materia.nombre}</td>
-                <td>${materia.uv}</td>
-                <td>
-                    <button type="button" class="btn btn-outline-danger" 
-                        onClick='eliminarMateria(${materia.id})'>DEL
-                    </button>
-                </td>
-            </tr>
-        `;
-    });
-    document.querySelector('#tblMaterias > tbody').innerHTML = filas;
-}
-function buscarMateria() {
-    const filtro = document.getElementById('inputBusquedaMateria').value;
-
-    // Si el campo de búsqueda está vacío, cargar todas las materias
-    if (filtro.trim() === '') {
-        consultarMaterias();  // Llama a la función sin filtro para cargar todos los registros
-    } else {
-        // Llama al endpoint con el filtro de búsqueda
-        fetch(`consultar_materias/?q=${filtro}`)
-        .then(res => res.json())
-        .then(data => {
-            mostrarFilasMaterias(data);  // Muestra los resultados filtrados
-        })
-        .catch(err => console.log(err));
+        let filas = '';
+        data.forEach(materia => {
+            filas += `
+                <tr>
+                    <td>${materia.codigo}</td>
+                    <td>${materia.nombre}</td>
+                    <td>${materia.uv}</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger" 
+                            onClick='eliminarMateria(${materia.id})'>DEL
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.querySelector('#tblMaterias > tbody').innerHTML = filas;
     }
-}
 
-    // Carga inicial de todos los alumnos
+    function buscarMateria() {
+        const filtro = document.getElementById('inputBusquedaMateria').value;
+
+        if (filtro.trim() === '') {
+            consultarMaterias();
+        } else {
+            fetch(`consultar_materias/?q=${filtro}`)
+                .then(res => res.json())
+                .then(data => {
+                    mostrarFilasMaterias(data);
+                })
+                .catch(err => console.log(err));
+        }
+    }
+
+    // Evento para búsqueda en tiempo real
+    document.getElementById('inputBusquedaMateria').addEventListener('input', buscarMateria);
+
+    // Carga inicial de todas las materias
     consultarMaterias();
-</script> 
+</script>

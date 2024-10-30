@@ -9,9 +9,8 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="mb-3">
-                <input type="text" id="inputBusquedaDocente" class="form-control" placeholder="Buscar">
-                <button type="button" class="btn btn-primary mt-2" onclick="buscarDocente()">Buscar</button>
+            <div class="input-group mb-3">
+                <input type="text" id="inputBusquedaDocente" class="form-control" placeholder="Buscar"> 
             </div>
             <table class="table table-hover" id="tblDocentes">
                 <thead>
@@ -29,6 +28,7 @@
         </div>
     </div>
 </form>
+
 <script>
     /*
     Tarea: Realizar la busqueda interactiva de docentes, por codigo, nombre y email.
@@ -42,15 +42,17 @@
             enviarDatosDocente(datos);
         }
     }
-    function consultarDocentes(){
-        fetch('consultar_docentes/')
+    
+    function consultarDocentes(filtro = '') {
+        fetch('consultar_docentes/?q=' + filtro)
         .then(res => res.json())
         .then(data => {
             mostrarFilasDocentes(data);
         })
         .catch(err => console.log(err));
     }
-    function mostrarFilasDocentes(data = []){
+
+    function mostrarFilasDocentes(data = []) {
         let filas = '';
         data.forEach(docente => {
             filas += `
@@ -70,23 +72,19 @@
         });
         document.querySelector('#tblDocentes > tbody').innerHTML = filas;
     }
-    function buscarDocente() {
-    const filtro = document.getElementById('inputBusquedaDocente').value;
 
-    // Si el campo de búsqueda está vacío, mostrar todos los docentes
-    if (filtro.trim() === '') {
-        consultarDocentes();  // Llamar a la función sin filtro para cargar todos los registros
-    } else {
-        // Enviar la solicitud con el filtro
-        fetch(`consultar_docentes/?q=${filtro}`)
-        .then(res => res.json())
-        .then(data => {
-            mostrarFilasDocentes(data);  // Mostrar los resultados
-        })
-        .catch(err => console.log(err));
-    }
-}
+    // Función de búsqueda
+    document.getElementById('inputBusquedaDocente').addEventListener('input', function() {
+        const filtro = this.value;
+        // Si el campo de búsqueda está vacío, mostrar todos los docentes
+        if (filtro.trim() === '') {
+            consultarDocentes();  // Llamar a la función sin filtro para cargar todos los registros
+        } else {
+            // Enviar la solicitud con el filtro
+            consultarDocentes(filtro);  // Buscar solo los registros que coinciden con el filtro
+        }
+    });
 
-    // Carga inicial de todos los alumnos
+    // Carga inicial de todos los docentes
     consultarDocentes();
 </script>
