@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from academica.views import hola_mundo, saludo, edad, index, vista, consultar_alumnos, guardar_alumno, consultar_docentes, guardar_docente, consultar_materias, guardar_materia, consultar_usuarios, guardar_usuario
+from academica.views import hola_mundo, saludo, edad, index, vista, consultar_alumnos, guardar_alumno, consultar_docentes, guardar_docente, consultar_materias, guardar_materia, consultar_usuarios, guardar_usuario,  validar_codigo_alumno, verificar_codigo, verificar_codigo_materia
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,4 +33,7 @@ urlpatterns = [
     path('guardar_materia/', guardar_materia),
     path('consultar_usuarios/', consultar_usuarios),  
     path('guardar_usuario/', guardar_usuario),
+    path('validar_codigo_alumno/', validar_codigo_alumno, name='validar_codigo_alumno'),
+    path('verificar_codigo/', verificar_codigo, name='verificar_codigo'),
+    path('verificar_codigo/', verificar_codigo_materia, name='verificar_codigo_materia'),
 ]

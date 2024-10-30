@@ -30,7 +30,7 @@
             <div class="row p-1">
                 <div class="col-3 col-md-2">TELEFONO </div>
                 <div class="col-9 col-md-4">
-                    <input type="text" class="form-control" id="txtTelefonoAlumno" name="txtTelefonoAlumno" required>
+                    <input type="text" class="form-control" id="txtTelefonoAlumno" name="txtTelefonoAlumno" required pattern="^\d{4}-\d{4}$|^\d{8}$" title="El teléfono debe tener formato 0000-0000 o 8 dígitos sin guiones.">
                 </div>
             </div>
             <div class="row p-1">
@@ -47,35 +47,78 @@
         </div>
     </div>
 </form>
+
 <script>
-    document.querySelector('#frmAlumno').addEventListener('submit', (e)=>{
+    document.querySelector('#frmAlumno').addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        let datos = {
-            accion : frmAlumno.dataset.accion,
-            idAlumno : frmAlumno.dataset.idalumno,
-            codigo : txtCodigoAlumno.value,
-            nombre : txtNombreAlumno.value,
-            direccion : txtDireccionAlumno.value,
-            telefono : txtTelefonoAlumno.value
-        };
-        enviarDatosAlumno(datos);
+
+        // Validar campos
+        if (validarFormulario()) {
+            let datos = {
+                accion: frmAlumno.dataset.accion,
+                idAlumno: frmAlumno.dataset.idalumno,
+                codigo: txtCodigoAlumno.value,
+                nombre: txtNombreAlumno.value,
+                direccion: txtDireccionAlumno.value,
+                telefono: txtTelefonoAlumno.value
+            };
+            validarCodigoUnico(datos.codigo).then(isUnique => {
+                if (isUnique) {
+                    enviarDatosAlumno(datos);
+                } else {
+                    alert('El código de alumno ya existe. Por favor, ingrese uno nuevo.');
+                }
+            });
+        }
     });
-    function enviarDatosAlumno(datos){
-        fetch('guardar_alumno/',{
-                method : 'POST',
-                body : JSON.stringify(datos)
-            })
+
+    function validarFormulario() {
+        // Verifica que todos los campos tengan contenido
+        const inputs = document.querySelectorAll('#frmAlumno input');
+        for (let input of inputs) {
+            if (input.value.trim() === '') {
+                alert('Por favor, complete todos los campos.');
+                return false;
+            }
+        }
+        // Validar formato del teléfono
+        const telefono = txtTelefonoAlumno.value;
+        const telefonoRegex = /^\d{4}-\d{4}$|^\d{8}$/;
+        if (!telefonoRegex.test(telefono)) {
+            alert('El teléfono debe tener formato 0000-0000 o 8 dígitos sin guiones.');
+            return false;
+        }
+        return true;
+    }
+
+    function validarCodigoUnico(codigo) {
+        return fetch(`validar_codigo_alumno/?codigo=${codigo}`) // Cambia la URL según tu backend
+            .then(response => response.json())
+            .then(data => {
+                return data.existe === false; // Suponiendo que el backend retorna { existe: true/false }
+            });
+    }
+
+    alertify.set('notifier', 'position', 'top-right');
+    function enviarDatosAlumno(datos) {
+        fetch('guardar_alumno/', {
+            method: 'POST',
+            body: JSON.stringify(datos)
+        })
             .then(res => res.json())
             .then(data => {
-                if( data.msg==='ok' ){
+                if (data.msg === 'ok') {
+                    alertify.success('Registro guardado exitosamente');
                     consultarAlumnos();
                     limpiarDatosAlumnos();
+                } else {
+                    alertify.error('Error al guardar el registro'); 
                 }
             })
             .catch(err => console.log(err));
     }
-    function modificarAlumno(alumno){
+
+    function modificarAlumno(alumno) {
         frmAlumno.dataset.accion = 'modificar';
         frmAlumno.dataset.idalumno = alumno.id;
         txtCodigoAlumno.value = alumno.codigo;
@@ -83,7 +126,8 @@
         txtDireccionAlumno.value = alumno.direccion;
         txtTelefonoAlumno.value = alumno.telefono;
     }
-    function limpiarDatosAlumnos(){
+
+    function limpiarDatosAlumnos() {
         frmAlumno.dataset.accion = 'nuevo';
         frmAlumno.dataset.idalumno = '';
         txtCodigoAlumno.value = '';

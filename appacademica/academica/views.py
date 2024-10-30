@@ -36,6 +36,11 @@ def consultar_alumnos(request):
     datos = list(alumnos.values('id', 'codigo', 'nombre', 'direccion', 'telefono'))
     return JsonResponse(datos, safe=False)
 
+def validar_codigo_alumno(request):
+    codigo = request.GET.get('codigo')
+    existe = alumno.objects.filter(codigo=codigo).exists()
+    return JsonResponse({'existe': existe})
+
 # Vista para consultar docentes
 def consultar_docentes(request):
     filtro = request.GET.get('q', '')  # Recibe el parámetro de búsqueda
@@ -51,6 +56,11 @@ def consultar_docentes(request):
     datos = list(docentes.values('id', 'codigo', 'nombre', 'direccion', 'telefono', 'email'))
     return JsonResponse(datos, safe=False)
 
+def verificar_codigo(request):
+    codigo = request.GET.get('codigo')
+    existe = docente.objects.filter(codigo=codigo).exists()
+    return JsonResponse({'existe': existe})
+
 # Vista para consultar materias
 def consultar_materias(request):
     filtro = request.GET.get('q', '')
@@ -64,6 +74,11 @@ def consultar_materias(request):
 
     datos = list(materias.values('id', 'codigo', 'nombre', 'uv'))
     return JsonResponse(datos, safe=False)
+
+def verificar_codigo_materia(request):
+    codigo = request.GET.get('codigo')
+    existe = materia.objects.filter(codigo=codigo).exists()
+    return JsonResponse({'existe': existe})
 @csrf_exempt
 def guardar_alumno(request):
     if request.method == 'POST':
